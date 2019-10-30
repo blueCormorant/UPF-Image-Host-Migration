@@ -4,9 +4,15 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from urllib import request
+import base64
+import os
+from os.path import expanduser
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ["https://www.googleapis.com/auth/photoslibrary.readonly"]
+homeDir = expanduser("~")
+topLevelDir = homeDir + "\\Desktop\\UpfPhotoAlbums"
 
 def getPhotosService():
 	creds = None
@@ -63,14 +69,45 @@ def listAlbumPhotos(googlePhotos, albumId, pageSize=50):
 def getPhoto(googlePhotos, photoId):
 	return googlePhotos.mediaItems().get(mediaItemId=photoId).execute()
 
+def getPhotoBinary(photo):
+	baseUrl = photo['baseUrl'] + "=d"
+	res = request.urlopen(baseUrl)
+	return res.read()
 
+def saveToFile(data, albumName, fileName):
+	filePath = topLevelDir + "\\" + albumName + "\\" + fileName
+	with open(filePath, "wb") as _file:
+		_file.write(data)
+
+def makeAlbumDir(albumName):
+	newDirName = topLevelDir + '\\' + albumName
+	os.mkdir(newDirName)
+
+
+def downloadAlbum(googlePhotos, albumId):
+	album = getAlbum(googlePhotos, albumId)
+	albumName = album['title']
+	photos = listAlbumPhotos(googlePhotos, albumId)
+	try:
+		makeAlbumDir(albumName)
+	except FileExistsError as e:
+		print(e)
+	for photo in photos:
+		fileName = photo['filename']
+		data = getPhotoBinary(photo)
+		saveToFile(data, albumName, fileName)
 
 albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6mKmGbbl"
 photoId = "AM4Ir-KSR_sciwARpwUtwsgmUOQXrFIX_4BP1fc19iv6If2Hx4CgzFztLBPEhZ45cr2L76qnKdoFLzIdRRMXSoP0mw9PScZx9A"
 googlePhotos = getPhotosService()
-#album = getAlbum(googlePhotos, albumId)
-#print(listAlbumPhotos(googlePhotos, album['id']))
-print(getPhoto(googlePhotos, photoId))
 
-#myAlbum = getAlbum(googlePhotos, albumId)
+
+downloadAlbum(googlePhotos, albumId)
+
+'''
+photo = getPhoto(googlePhotos, photoId)
+data = getPhotoBinary(photo)
+saveToFile(data, "test.png")
+'''
+
 
