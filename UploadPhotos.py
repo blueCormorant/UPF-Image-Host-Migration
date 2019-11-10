@@ -2,11 +2,10 @@
 import flickrapi
 import json
 import xmltodict
-#import flickrapi.FlickrAPI
 import os
 from os.path import expanduser
+import xml.etree.ElementTree as ET
 import inspect
-
 
 api_key = u'958d89b45e9a9a8147eacaa58fd7fba8'
 api_secret = u'f6fb0a89f6c79b28'
@@ -61,34 +60,76 @@ class FileWithCallback(object):
 def callback(progress):
 	pass
 
-def uploadPhoto(albumName, photoName):
-	filePath = topLevelDir + "\\" + albumName + "\\" + photoName
+def uploadPhoto(albumName, photoName, coverPhoto=False):
+	if coverPhoto:
+		filePath = topLevelDir + "\\" + albumName + "\\Cover Photo\\" + photoName
+	else:
+		filePath = topLevelDir + "\\" + albumName + "\\" + photoName
 	try:
 		res = flickr.upload(filePath, FileWithCallback(filePath, callback))	
 		print("Uploaded " + photoName)
 		return res
-	except Exception as e:
+	except IOError as e:
 		print("Could not upload " + photoName)
 		print(e)
+		raise IOError
 		return None
 
 # Add a try block in this function to handle the exception
 # of trying to use an invalid filename
-def uploadAlbum(albumName, coverPhotoId):
+def uploadAlbum(albumName, api_key):
 	albumPath = topLevelDir + "\\" + albumName
+	coverPath = albumPath + "\\" + "Cover Photo"
+
+	_dir = os.listdir(coverPath)
+	
+	if len(_dir) > 1:
+		print ("There can only be one photo in the \"Cover Photo\" directory")
+		return
+
+	fileName = _dir[0]
+	res = uploadPhoto(albumName, fileName, coverPhoto=True)
+	if res is None:
+		return
+
+	coverPhotoId = getPhotoId(res)
+	res = createAlbum(albumName, api_key, coverPhotoId)	
+	if res is None:
+		return
+
+	albumId = getPhotosetId(res)
+
 	_dir = os.listdir(albumPath)
 	for _file in _dir:
-		uploadPhoto(albumName, _file)
+		try:
+			res = uploadPhoto(albumName, _file)
+		except:
+			continue
+
+		photoId = getPhotoId(res)
+		addToAlbum(albumId, photoId, api_key)
+		
+
 
 def createAlbum(albumName, api_key, primary_photo_id):
-	params = {}
-	params['method'] = 'flickr.photosets.create'
-	params['api_key'] = api_key
-	params['title'] = albumName
-	params['primary_photo_id'] = primary_photo_id
-	FlickrAPI._flickr_call(params)
+	return flickr._flickr_call(method='flickr.photosets.create',
+							   api_key=api_key,
+							   title=albumName,
+							   primary_photo_id=primary_photo_id)
+
+def addToAlbum(albumId, photoId, api_key):	
+	return flickr._flickr_call(method='flickr.photosets.addPhoto',
+							   api_key=api_key,
+							   photoset_id=albumId,
+							   photo_id=photoId)
 
 def getPhotoId(res):
 	return res[0].text
+
+def getPhotosetId(res):
+	et = ET.fromstring(res.decode("utf-8"))
+	return et[0].attrib['id']
+
+uploadAlbum(albumName, api_key)
 
 

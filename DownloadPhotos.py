@@ -70,12 +70,18 @@ def getPhoto(googlePhotos, photoId):
 	return googlePhotos.mediaItems().get(mediaItemId=photoId).execute()
 
 def getPhotoBinary(photo):
-	baseUrl = photo['baseUrl'] + "=d"
+	return getPhotoBinaryFromBaseUrl(photo['baseUrl'])
+
+def getPhotoBinaryFromBaseUrl(baseUrl):
+	baseUrl = baseUrl + "=d"
 	res = request.urlopen(baseUrl)
 	return res.read()
 
-def saveToFile(data, albumName, fileName):
-	filePath = topLevelDir + "\\" + albumName + "\\" + fileName
+def saveToFile(data, albumName, fileName, coverPhoto = False):
+	if coverPhoto:
+		filePath = topLevelDir + "\\" + albumName + "\\" + "Cover Photo\\" + fileName
+	else:
+		filePath = topLevelDir + "\\" + albumName + "\\" + fileName
 	with open(filePath, "wb") as _file:
 		_file.write(data)
 
@@ -83,19 +89,38 @@ def makeAlbumDir(albumName):
 	newDirName = topLevelDir + '\\' + albumName
 	os.mkdir(newDirName)
 
+def makeCoverPhotoDir(albumName):
+	newDirName = topLevelDir + '\\' + albumName + '\\' + "Cover Photo"
+	os.mkdir(newDirName)
+
 
 def downloadAlbum(googlePhotos, albumId):
 	album = getAlbum(googlePhotos, albumId)
 	albumName = album['title']
-	photos = listAlbumPhotos(googlePhotos, albumId)
+	coverPhotoBaseUrl = album['coverPhotoBaseUrl']
+	coverPhotoMediaItemId = album['coverPhotoMediaItemId']
+
+
 	try:
 		makeAlbumDir(albumName)
+		makeCoverPhotoDir(albumName)
 	except FileExistsError as e:
 		print(e)
+		return
+
+	coverPhoto = getPhoto(googlePhotos, coverPhotoMediaItemId)
+	data = getPhotoBinary(coverPhoto)
+	saveToFile(data, albumName, coverPhoto['filename'], coverPhoto=True)
+
+	photos = listAlbumPhotos(googlePhotos, albumId)
+
 	for photo in photos:
-		fileName = photo['filename']
-		data = getPhotoBinary(photo)
-		saveToFile(data, albumName, fileName)
+		if photo['id'] != coverPhoto['id']:
+			fileName = photo['filename']
+			data = getPhotoBinary(photo)
+			saveToFile(data, albumName, fileName)
+		else:
+			print("Got cover photo")
 
 albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6mKmGbbl"
 photoId = "AM4Ir-KSR_sciwARpwUtwsgmUOQXrFIX_4BP1fc19iv6If2Hx4CgzFztLBPEhZ45cr2L76qnKdoFLzIdRRMXSoP0mw9PScZx9A"
