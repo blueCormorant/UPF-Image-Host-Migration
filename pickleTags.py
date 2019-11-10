@@ -1,4 +1,5 @@
 import pickle
+import pycountry
 
 tags = {
 	"Africa Day" : "africaday",
@@ -29,13 +30,64 @@ tags = {
 	"Women's Federation for World Peace" : "wfwp",
 	"Womens Federation for World Peace" : "wfwp",
 	"Women Federation for World Peace" : "wfwp",
-	"World Summit" : "worldsummit"
+	"World Summit" : "worldsummit",
+	"Ivory Coast" : "IvoryCoast",
+	"IvoryCoast" : "IvoryCoast",
+	"ivorycoast" : "IvoryCoast",
+	"ivory coast" : "IvoryCoast",
 }
 
+replacements = {
+	"Russian Federation" : "Russia",
+	"Lao People's Democratic Republic" : "Laos",
+	"Palestine, State of" : "Palestine",
+	"Syrian Arab Republic" : "Syria"
+}
+
+
+for country in pycountry.countries:
+
+	shortestName = country.name
+
+	names = []
+
+	try:
+		names.append(country.official_name)
+		shortestName = country.official_name
+	except AttributeError:
+		pass
+
+	try:
+		names.append(country.common_name)
+		if len(country.common_name) < len(shortestName):
+			shortestName = country.common_name
+	except AttributeError:
+		pass
+
+	try:
+		names.append(country.name)
+		if len(country.name) < len(shortestName):
+			shortestName = country.name
+	except AttributeError:
+		pass
+
+	for key in replacements:
+		if shortestName == key:
+			shortestName = replacements[key]
+
+	for name in names:
+		tags[name] = shortestName
+
+
+
+'''
 with open("tags.pickle", "wb") as _file:
 	pickle.dump(tags, _file)
 
+
 '''
 with open("tags.pickle", "rb") as _file:
-	print(pickle.load(_file))
-'''
+	tags = pickle.load(_file)
+	for key in tags:
+		print(key, " : ", tags[key])
+
