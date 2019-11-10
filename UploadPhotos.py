@@ -15,7 +15,6 @@ flickr = flickrapi.FlickrAPI(api_key, api_secret)
 
 if not flickr.token_valid(perms='write'):
 
-	print("TESTA")
 	# Get a request token
 	flickr.get_request_token(oauth_callback='oob')
 
@@ -31,14 +30,13 @@ if not flickr.token_valid(perms='write'):
 	# Trade the request token for an access token
 	flickr.get_access_token(verifier)
 
-print('Step 2: use Flickr')
-
 homeDir = expanduser("~")
 topLevelDir = homeDir + "\\Desktop\\UpfPhotoAlbums"
 
 fileName = "5DM48204.jpg"
 photoName = fileName
-albumName = "WS 2017 Staff-Group Posed Photos"
+#albumName = "WS 2017 Staff-Group Posed Photos"
+albumName = "Argentina-2015-10-10-UPF Principles of Peace Presented in Buenos Aires Seminar"
 
 filePath = "C:\\Users\\lucav\\Desktop\\UpfPhotoAlbums\\WS 2017 Staff-Group Posed Photos\\5DM48204.jpg"
 
@@ -70,8 +68,7 @@ def uploadPhoto(albumName, photoName, coverPhoto=False):
 		print("Uploaded " + photoName)
 		return res
 	except IOError as e:
-		print("Could not upload " + photoName)
-		print(e)
+		#print(e)
 		raise IOError
 		return None
 
@@ -79,7 +76,14 @@ def uploadPhoto(albumName, photoName, coverPhoto=False):
 # of trying to use an invalid filename
 def uploadAlbum(albumName, api_key):
 	albumPath = topLevelDir + "\\" + albumName
-	coverPath = albumPath + "\\" + "Cover Photo"
+	coverPath = albumPath + "\\Cover Photo"
+	tagsPath = albumPath + "\\Tags\\tags.txt"
+
+	with open(tagsPath, "r") as _file:
+		tags = _file.readlines()
+		tags = [tag.strip() for tag in tags]
+		tags = " ".join(tags)
+		print(tags)
 
 	_dir = os.listdir(coverPath)
 	
@@ -93,6 +97,7 @@ def uploadAlbum(albumName, api_key):
 		return
 
 	coverPhotoId = getPhotoId(res)
+	setPhotoTags(coverPhotoId, tags, api_key)
 	res = createAlbum(albumName, api_key, coverPhotoId)	
 	if res is None:
 		return
@@ -103,12 +108,12 @@ def uploadAlbum(albumName, api_key):
 	for _file in _dir:
 		try:
 			res = uploadPhoto(albumName, _file)
-		except:
+			photoId = getPhotoId(res)
+			setPhotoTags(photoId, tags, api_key)
+			addToAlbum(albumId, photoId, api_key)
+		except Exception as e:
+			print(e)
 			continue
-
-		photoId = getPhotoId(res)
-		addToAlbum(albumId, photoId, api_key)
-		
 
 
 def createAlbum(albumName, api_key, primary_photo_id):
@@ -123,6 +128,12 @@ def addToAlbum(albumId, photoId, api_key):
 							   photoset_id=albumId,
 							   photo_id=photoId)
 
+def setPhotoTags(photoId, tags, api_key):
+	return flickr._flickr_call(method='flickr.photos.setTags',
+							   api_key=api_key,
+							   photo_id=photoId,
+							   tags=tags)
+
 def getPhotoId(res):
 	return res[0].text
 
@@ -131,5 +142,4 @@ def getPhotosetId(res):
 	return et[0].attrib['id']
 
 uploadAlbum(albumName, api_key)
-
 
