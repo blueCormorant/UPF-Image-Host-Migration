@@ -59,7 +59,7 @@ def listAlbumPhotos(googlePhotos, albumId, pageSize=50):
 	while nextPageToken != '':
 		nextPageToken = '' if nextPageToken == 'Dummy' else nextPageToken
 		results = googlePhotos.mediaItems().search(
-			body={"pageSize": pageSize, "pageToken": nextPageToken}).execute()
+			body={"albumId": albumId, "pageSize": pageSize, "pageToken": nextPageToken}).execute()
 		photos = results.get('mediaItems', [])
 		nextPageToken = results.get('nextPageToken', '')
 		for photo in photos:
@@ -93,7 +93,10 @@ def makeCoverPhotoDir(albumName):
 	newDirName = topLevelDir + '\\' + albumName + '\\' + "Cover Photo"
 	os.mkdir(newDirName)
 
-
+def makeTagsDir(albumName):
+	newDirName = topLevelDir + '\\' + albumName + '\\' + "Tags"
+	os.mkdir(newDirName)
+	
 def downloadAlbum(googlePhotos, albumId):
 	album = getAlbum(googlePhotos, albumId)
 	albumName = album['title']
@@ -104,9 +107,14 @@ def downloadAlbum(googlePhotos, albumId):
 	try:
 		makeAlbumDir(albumName)
 		makeCoverPhotoDir(albumName)
+		makeTagsDir(albumName)
 	except FileExistsError as e:
 		print(e)
 		return
+
+	tags = getAlbumTags(albumName)
+	writeTagsToFile(albumName, tags)
+
 
 	coverPhoto = getPhoto(googlePhotos, coverPhotoMediaItemId)
 	data = getPhotoBinary(coverPhoto)
@@ -122,10 +130,29 @@ def downloadAlbum(googlePhotos, albumId):
 		else:
 			print("Got cover photo")
 
-albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6mKmGbbl"
-photoId = "AM4Ir-KSR_sciwARpwUtwsgmUOQXrFIX_4BP1fc19iv6If2Hx4CgzFztLBPEhZ45cr2L76qnKdoFLzIdRRMXSoP0mw9PScZx9A"
-googlePhotos = getPhotosService()
+def getAlbumTags(albumName):
+	tags = []
+	with open("tags.pickle", "rb") as _file:
+		tagCandidates = pickle.load(_file)
+		for key in tagCandidates:
+			if tagCandidates[key].lower() in albumName.lower():
+				if tagCandidates[key] not in tags:
+					tags.append(tagCandidates[key])
+	return tags
 
+def writeTagsToFile(albumName, tags):
+	tagsDir = topLevelDir + '\\' + albumName + '\\' + "Tags\\"
+	tagsFile = tagsDir + "tags.txt"
+	with open(tagsFile, "w") as _file:
+		for tag in tags:
+			_file.write(tag + "\n")
+
+
+albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6mKmGbbl"
+#photoId = "AM4Ir-KSR_sciwARpwUtwsgmUOQXrFIX_4BP1fc19iv6If2Hx4CgzFztLBPEhZ45cr2L76qnKdoFLzIdRRMXSoP0mw9PScZx9A"
+
+#albumId = "AM4Ir-LgYgoS-JXdwMRp3s5ICyDbbehLApAPJWldevR2UWFpcoKRyyzwAL80Dnu2LoQPCAnlaKgh"
+googlePhotos = getPhotosService()
 
 downloadAlbum(googlePhotos, albumId)
 
