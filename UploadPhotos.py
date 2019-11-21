@@ -141,5 +141,20 @@ def getPhotosetId(res):
 	et = ET.fromstring(res.decode("utf-8"))
 	return et[0].attrib['id']
 
-uploadAlbum(albumName, api_key)
+
+def getAlbums():
+	with open("albumList.txt") as _file:
+		albums = _file.readlines()
+		albums = [album.rstrip('\n') for album in albums]
+		albums = [album.split(' :: ')[0] for album in albums]
+		return albums
+
+def uploadAlbums(api_key):
+	for albumName in getAlbums():
+		uploadAlbum(albumName, api_key)
+		print("Uploaded ", albumName)
+
+
+uploadAlbums(api_key)
+
 

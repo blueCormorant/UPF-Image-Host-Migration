@@ -147,6 +147,18 @@ def writeTagsToFile(albumName, tags):
 		for tag in tags:
 			_file.write(tag + "\n")
 
+def getAlbums(googlePhotos):
+	with open("albumList.txt") as _file:
+		albums = _file.readlines()
+		albums = [album.rstrip('\n') for album in albums]
+		albums = [album.split(' :: ')[1] for album in albums]
+		return albums
+
+def downloadAlbums(googlePhotos):
+	for albumId in getAlbums(googlePhotos):
+		downloadAlbum(googlePhotos, albumId)
+
+
 
 albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6mKmGbbl"
 #photoId = "AM4Ir-KSR_sciwARpwUtwsgmUOQXrFIX_4BP1fc19iv6If2Hx4CgzFztLBPEhZ45cr2L76qnKdoFLzIdRRMXSoP0mw9PScZx9A"
@@ -154,7 +166,8 @@ albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6
 #albumId = "AM4Ir-LgYgoS-JXdwMRp3s5ICyDbbehLApAPJWldevR2UWFpcoKRyyzwAL80Dnu2LoQPCAnlaKgh"
 googlePhotos = getPhotosService()
 
-downloadAlbum(googlePhotos, albumId)
+downloadAlbums(googlePhotos)
+	
 
 '''
 photo = getPhoto(googlePhotos, photoId)
@@ -163,3 +176,4 @@ saveToFile(data, "test.png")
 '''
 
 
+#downloadAlbum(googlePhotos, albumId)
