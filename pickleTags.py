@@ -31,63 +31,213 @@ tags = {
 	"Womens Federation for World Peace" : "wfwp",
 	"Women Federation for World Peace" : "wfwp",
 	"World Summit" : "worldsummit",
-	"Ivory Coast" : "IvoryCoast",
+	"Afghanistan" : "Afghanistan",
+	"Albania" : "Albania",
+	"Algeria" : "Algeria",
+	"Andorra" : "Andorra",
+	"Angola" : "Angola",
+	"Antigua" : "Antigua",
+	"Argentina" : "Argentina",
+	"Armenia" : "Armenia",
+	"Australia" : "Australia",
+	"Austria" : "Austria",
+	"Azerbaijan" : "Azerbaijan",
+	"Bahamas" : "Bahamas",
+	"Bahrain" : "Bahrain",
+	"Bangladesh" : "Bangladesh",
+	"Barbados" : "Barbados",
+	"Belarus" : "Belarus",
+	"Belgium" : "Belgium",
+	"Belize" : "Belize",
+	"Benin" : "Benin",
+	"Bhutan" : "Bhutan",
+	"Bolivia" : "Bolivia",
+	"Bosnia" : "Bosnia",
+	"Botswana" : "Botswana",
+	"Brazil" : "Brazil",
+	"Brunei" : "Brunei",
+	"Bulgaria" : "Bulgaria",
+	"Burkina" : "Burkina",
+	"Burundi" : "Burundi",
+	"Cambodia" : "Cambodia",
+	"Cameroon" : "Cameroon",
+	"Canada" : "Canada",
+	"CapeVerde" : "CapeVerde",
+	"CentralAfricanRep" : "CentralAfricanRep",
+	"Chad" : "Chad",
+	"Chile" : "Chile",
+	"China" : "China",
+	"Colombia" : "Colombia",
+	"Comoros" : "Comoros",
+	"Congo" : "Congo",
+	"CostaRica" : "CostaRica",
+	"Croatia" : "Croatia",
+	"Cuba" : "Cuba",
+	"Cyprus" : "Cyprus",
+	"CzechRepublic" : "CzechRepublic",
+	"Denmark" : "Denmark",
+	"Djibouti" : "Djibouti",
+	"Dominica" : "Dominica",
+	"DominicanRepublic" : "DominicanRepublic",
+	"EastTimor" : "EastTimor",
+	"Ecuador" : "Ecuador",
+	"Egypt" : "Egypt",
+	"ElSalvador" : "ElSalvador",
+	"Equatorial Guinea" : "Equatorial Guinea",
+	"Eritrea" : "Eritrea",
+	"Estonia" : "Estonia",
+	"Ethiopia" : "Ethiopia",
+	"Fiji" : "Fiji",
+	"Finland" : "Finland",
+	"France" : "France",
+	"Gabon" : "Gabon",
+	"Gambia" : "Gambia",
+	"Georgia" : "Georgia",
+	"Germany" : "Germany",
+	"Ghana" : "Ghana",
+	"Greece" : "Greece",
+	"Grenada" : "Grenada",
+	"Guatemala" : "Guatemala",
+	"Guinea" : "Guinea",
+	"GuineaBissau" : "GuineaBissau",
+	"Guyana" : "Guyana",
+	"Haiti" : "Haiti",
+	"Honduras" : "Honduras",
+	"Hungary" : "Hungary",
+	"Iceland" : "Iceland",
+	"India" : "India",
+	"Indonesia" : "Indonesia",
+	"Iran" : "Iran",
+	"Iraq" : "Iraq",
+	"Ireland" : "Ireland",
+	"Israel" : "Israel",
+	"Italy" : "Italy",
 	"IvoryCoast" : "IvoryCoast",
-	"ivorycoast" : "IvoryCoast",
-	"ivory coast" : "IvoryCoast",
+	"Jamaica" : "Jamaica",
+	"Japan" : "Japan",
+	"Jordan" : "Jordan",
+	"Kazakhstan" : "Kazakhstan",
+	"Kenya" : "Kenya",
+	"Kiribati" : "Kiribati",
+	"Korea" : "Korea",
+	"Kosovo" : "Kosovo",
+	"Kuwait" : "Kuwait",
+	"Kyrgyzstan" : "Kyrgyzstan",
+	"Laos" : "Laos",
+	"Latvia" : "Latvia",
+	"Lebanon" : "Lebanon",
+	"Lesotho" : "Lesotho",
+	"Liberia" : "Liberia",
+	"Libya" : "Libya",
+	"Liechtenstein" : "Liechtenstein",
+	"Lithuania" : "Lithuania",
+	"Luxembourg" : "Luxembourg",
+	"Macedonia" : "Macedonia",
+	"Madagascar" : "Madagascar",
+	"Malawi" : "Malawi",
+	"Malaysia" : "Malaysia",
+	"Maldives" : "Maldives",
+	"Mali" : "Mali",
+	"Malta" : "Malta",
+	"MarshallIslands" : "MarshallIslands",
+	"Mauritania" : "Mauritania",
+	"Mauritius" : "Mauritius",
+	"Mexico" : "Mexico",
+	"Micronesia" : "Micronesia",
+	"Moldova" : "Moldova",
+	"Monaco" : "Monaco",
+	"Mongolia" : "Mongolia",
+	"Montenegro" : "Montenegro",
+	"Morocco" : "Morocco",
+	"Mozambique" : "Mozambique",
+	"Myanmar" : "Myanmar",
+	"Namibia" : "Namibia",
+	"Nauru" : "Nauru",
+	"Nepal" : "Nepal",
+	"Netherlands" : "Netherlands",
+	"NewZealand" : "NewZealand",
+	"Nicaragua" : "Nicaragua",
+	"Niger" : "Niger",
+	"Nigeria" : "Nigeria",
+	"Norway" : "Norway",
+	"Oman" : "Oman",
+	"Pakistan" : "Pakistan",
+	"Palau" : "Palau",
+	"Panama" : "Panama",
+	"PapuaNewGuinea" : "PapuaNewGuinea",
+	"Paraguay" : "Paraguay",
+	"Peru" : "Peru",
+	"Philippines" : "Philippines",
+	"Poland" : "Poland",
+	"Portugal" : "Portugal",
+	"Qatar" : "Qatar",
+	"Romania" : "Romania",
+	"Russia" : "Russia",
+	"Rwanda" : "Rwanda",
+	"StKitts" : "StKitts",
+	"StLucia" : "StLucia",
+	"SaintVincent" : "SaintVincent",
+	"Samoa" : "Samoa",
+	"SanMarino" : "SanMarino",
+	"SaoTome" : "SaoTome",
+	"SaudiArabia" : "SaudiArabia",
+	"Senegal" : "Senegal",
+	"Serbia" : "Serbia",
+	"Seychelles" : "Seychelles",
+	"SierraLeone" : "SierraLeone",
+	"Singapore" : "Singapore",
+	"Slovakia" : "Slovakia",
+	"Slovenia" : "Slovenia",
+	"SolomonIslands" : "SolomonIslands",
+	"Somalia" : "Somalia",
+	"SouthAfrica" : "SouthAfrica",
+	"SouthSudan" : "SouthSudan",
+	"Spain" : "Spain",
+	"SriLanka" : "SriLanka",
+	"Sudan" : "Sudan",
+	"Suriname" : "Suriname",
+	"Swaziland" : "Swaziland",
+	"Sweden" : "Sweden",
+	"Switzerland" : "Switzerland",
+	"Syria" : "Syria",
+	"Taiwan" : "Taiwan",
+	"Tajikistan" : "Tajikistan",
+	"Tanzania" : "Tanzania",
+	"Thailand" : "Thailand",
+	"Togo" : "Togo",
+	"Tonga" : "Tonga",
+	"Trinidad" : "Trinidad",
+	"Tunisia" : "Tunisia",
+	"Turkey" : "Turkey",
+	"Turkmenistan" : "Turkmenistan",
+	"Tuvalu" : "Tuvalu",
+	"Uganda" : "Uganda",
+	"Ukraine" : "Ukraine",
+	"UnitedArabEmirates" : "UnitedArabEmirates",
+	"UnitedKingdom" : "UnitedKingdom",
+	"UnitedStates" : "UnitedStates",
+	"Uruguay" : "Uruguay",
+	"Uzbekistan" : "Uzbekistan",
+	"Vanuatu" : "Vanuatu",
+	"VaticanCity" : "VaticanCity",
+	"Venezuela" : "Venezuela",
+	"Vietnam" : "Vietnam",
+	"Yemen" : "Yemen",
+	"Zambia" : "Zambia",
+	"Zimbabwe" : "Zimbabwe"
 }
 
-replacements = {
-	"Russian Federation" : "Russia",
-	"Lao People's Democratic Republic" : "Laos",
-	"Palestine, State of" : "Palestine",
-	"Syrian Arab Republic" : "Syria"
-}
 
-
-for country in pycountry.countries:
-
-	shortestName = country.name
-
-	names = []
-
-	try:
-		names.append(country.official_name)
-		shortestName = country.official_name
-	except AttributeError:
-		pass
-
-	try:
-		names.append(country.common_name)
-		if len(country.common_name) < len(shortestName):
-			shortestName = country.common_name
-	except AttributeError:
-		pass
-
-	try:
-		names.append(country.name)
-		if len(country.name) < len(shortestName):
-			shortestName = country.name
-	except AttributeError:
-		pass
-
-	for key in replacements:
-		if shortestName == key:
-			shortestName = replacements[key]
-
-	for name in names:
-		tags[name] = shortestName
 
 
 
 '''
 with open("tags.pickle", "wb") as _file:
 	pickle.dump(tags, _file)
-
-
 '''
+
+
 with open("tags.pickle", "rb") as _file:
 	tags = pickle.load(_file)
 	for key in tags:
 		print(key, " : ", tags[key])
-
