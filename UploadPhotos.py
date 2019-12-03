@@ -6,6 +6,7 @@ import os
 from os.path import expanduser
 import xml.etree.ElementTree as ET
 import inspect
+from MessageLogger import MessageLogger
 
 api_key = u'958d89b45e9a9a8147eacaa58fd7fba8'
 api_secret = u'f6fb0a89f6c79b28'
@@ -63,18 +64,16 @@ def uploadPhoto(albumName, photoName, coverPhoto=False):
 		filePath = topLevelDir + "\\" + albumName + "\\Cover Photo\\" + photoName
 	else:
 		filePath = topLevelDir + "\\" + albumName + "\\" + photoName
-	try:
-		res = flickr.upload(filePath, FileWithCallback(filePath, callback))	
-		print("Uploaded " + photoName)
-		return res
-	except IOError as e:
-		#print(e)
-		raise IOError
-		return None
+	
+	return flickr.upload(filePath, FileWithCallback(filePath, callback))	
 
 # Add a try block in this function to handle the exception
 # of trying to use an invalid filename
-def uploadAlbum(albumName, api_key):
+def uploadAlbum(albumName, api_key, logger):
+	
+	msg = "\tUploading " + albumName + "..."
+	logger.log(msg)
+
 	albumPath = topLevelDir + "\\" + albumName
 	coverPath = albumPath + "\\Cover Photo"
 	tagsPath = albumPath + "\\Tags\\tags.txt"
@@ -83,37 +82,35 @@ def uploadAlbum(albumName, api_key):
 		tags = _file.readlines()
 		tags = [tag.strip() for tag in tags]
 		tags = " ".join(tags)
-		print(tags)
 
 	_dir = os.listdir(coverPath)
-	
+
+	if len(_dir) == 0:
+		raise Exception("The \"Cover Photo\" directory is empty")
+
 	if len(_dir) > 1:
-		print ("There can only be one photo in the \"Cover Photo\" directory")
-		return
+		raise Exception("There can only be one photo in the \"Cover Photo\" directory")
 
 	fileName = _dir[0]
 	res = uploadPhoto(albumName, fileName, coverPhoto=True)
 	if res is None:
-		return
+		raise Exception("Failed to upload cover photo")
 
 	coverPhotoId = getPhotoId(res)
 	setPhotoTags(coverPhotoId, tags, api_key)
 	res = createAlbum(albumName, api_key, coverPhotoId)	
 	if res is None:
-		return
+		raise Exception("Failed to create album on Flickr")
 
 	albumId = getPhotosetId(res)
 
 	_dir = os.listdir(albumPath)
 	for _file in _dir:
-		try:
+		if _file != "Cover Photo" and _file != "Tags":
 			res = uploadPhoto(albumName, _file)
 			photoId = getPhotoId(res)
 			setPhotoTags(photoId, tags, api_key)
 			addToAlbum(albumId, photoId, api_key)
-		except Exception as e:
-			print(e)
-			continue
 
 
 def createAlbum(albumName, api_key, primary_photo_id):
@@ -150,10 +147,38 @@ def getAlbums():
 		return albums
 
 def uploadAlbums(api_key):
-	for albumName in getAlbums():
-		uploadAlbum(albumName, api_key)
-		print("Uploaded ", albumName)
+	
+	logger = MessageLogger(logName="upload.log")
 
+	numAlbums = len(getAlbums())	
+	failCount = 0
+	failList = []
+
+
+	msg = "Uploading " + str(numAlbums) + " albums..."
+	logger.log(msg)
+
+	for albumName in getAlbums():
+		try:
+			uploadAlbum(albumName, api_key, logger)
+			msg = "\tSuccess uploading " + albumName + "\n"
+			logger.log(msg)
+		except Exception as e:
+			msg = "\t" + str(e) + "\n"
+			logger.log(msg)
+			failCount = failCount + 1
+			failList.append(albumName)
+	
+	if failCount > 0:
+		msg = "Failed to upload " + str(failCount) + " albums"
+		logger.log(msg)
+		for name in failList:
+			logger.log(name)
+	else:
+		msg = "All albums uploaded successfully"
+		logger.log(msg)
+
+	logger.endLog()
 
 uploadAlbums(api_key)
 

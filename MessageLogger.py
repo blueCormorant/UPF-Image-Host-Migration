@@ -1,7 +1,7 @@
 
 class MessageLogger(object):
 
-	def __init__(self, logName="photos.log"):
+	def __init__(self, logName):
 		self.file = open(logName, "w")
 		
 	def log(self, msg):

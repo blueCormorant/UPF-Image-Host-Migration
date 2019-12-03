@@ -127,8 +127,6 @@ def downloadAlbum(googlePhotos, albumId, logger):
 			fileName = photo['filename']
 			data = getPhotoBinary(photo)
 			saveToFile(data, albumName, fileName)
-		else:
-			print("Got cover photo")
 
 	return albumName
 
@@ -159,7 +157,7 @@ def getAlbums(googlePhotos):
 
 def downloadAlbums(googlePhotos):
 
-	logger = MessageLogger()
+	logger = MessageLogger(logName="download.log")
 
 	numAlbums = len(getAlbums(googlePhotos))
 	failCount = 0
@@ -180,6 +178,7 @@ def downloadAlbums(googlePhotos):
 			logger.log(msg)
 			failCount = failCount + 1
 			failList.append(albumName)
+	
 	if failCount > 0:
 		msg = "Failed to download " + str(failCount) + " albums"
 		logger.log(msg)
