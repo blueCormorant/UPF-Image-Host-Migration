@@ -97,20 +97,18 @@ def makeTagsDir(albumName):
 	newDirName = topLevelDir + '\\' + albumName + '\\' + "Tags"
 	os.mkdir(newDirName)
 	
-def downloadAlbum(googlePhotos, albumId):
+def downloadAlbum(googlePhotos, albumId, logger):
 	album = getAlbum(googlePhotos, albumId)
 	albumName = album['title']
+	msg = "\tDownloading " + albumName + "..."
+	logger.log(msg)
+
 	coverPhotoBaseUrl = album['coverPhotoBaseUrl']
 	coverPhotoMediaItemId = album['coverPhotoMediaItemId']
 
-
-	try:
-		makeAlbumDir(albumName)
-		makeCoverPhotoDir(albumName)
-		makeTagsDir(albumName)
-	except FileExistsError as e:
-		print(e)
-		return
+	makeAlbumDir(albumName)
+	makeCoverPhotoDir(albumName)
+	makeTagsDir(albumName)
 
 	tags = getAlbumTags(albumName)
 	writeTagsToFile(albumName, tags)
@@ -129,6 +127,8 @@ def downloadAlbum(googlePhotos, albumId):
 			saveToFile(data, albumName, fileName)
 		else:
 			print("Got cover photo")
+
+	return albumName
 
 def getAlbumTags(albumName):
 	tags = []
@@ -151,13 +151,56 @@ def getAlbums(googlePhotos):
 	with open("albumList.txt") as _file:
 		albums = _file.readlines()
 		albums = [album.rstrip('\n') for album in albums]
-		albums = [album.split(' :: ')[1] for album in albums]
+		albums = [album.split(' :: ') for album in albums]
 		return albums
 
-def downloadAlbums(googlePhotos):
-	for albumId in getAlbums(googlePhotos):
-		downloadAlbum(googlePhotos, albumId)
 
+def downloadAlbums(googlePhotos):
+
+	logger = MessageLogger()
+
+	numAlbums = len(getAlbums(googlePhotos))
+	failCount = 0
+	failList = []
+	
+	msg = "Downloading " + str(numAlbums) + " albums..."
+	logger.log(msg)
+
+	for album in getAlbums(googlePhotos):
+		albumName = album[0]
+		albumId = album[1]
+		try:
+			downloadAlbum(googlePhotos, albumId, logger)
+			msg = "\tSuccess downloading " + albumName + "\n"
+			logger.log(msg)
+		except Exception as e:
+			msg = "\t" + str(e) + "\n"
+			logger.log(msg)
+			failCount = failCount + 1
+			failList.append(albumName)
+	if failCount > 0:
+		msg = "Failed to download " + str(failCount) + " albums"
+		logger.log(msg)
+		for name in failList:
+			logger.log(name)
+	else:
+		msg = "All albums downloaded successfully"
+		logger.log(msg)
+
+	logger.endLog()
+
+class MessageLogger(object):
+
+	def __init__(self, logName="photos.log"):
+		self.file = open(logName, "w")
+		
+	def log(self, msg):
+		self.file.write(msg + "\n")
+		self.file.flush()
+		print(msg, flush=True)
+
+	def endLog(self):
+		self.file.close()
 
 
 albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6mKmGbbl"
@@ -165,6 +208,7 @@ albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6
 
 #albumId = "AM4Ir-LgYgoS-JXdwMRp3s5ICyDbbehLApAPJWldevR2UWFpcoKRyyzwAL80Dnu2LoQPCAnlaKgh"
 googlePhotos = getPhotosService()
+
 
 downloadAlbums(googlePhotos)
 	
@@ -177,3 +221,4 @@ saveToFile(data, "test.png")
 
 
 #downloadAlbum(googlePhotos, albumId)
+
