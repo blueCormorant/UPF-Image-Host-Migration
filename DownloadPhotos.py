@@ -8,6 +8,8 @@ from urllib import request
 import base64
 import os
 from os.path import expanduser
+from MessageLogger import MessageLogger
+
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ["https://www.googleapis.com/auth/photoslibrary.readonly"]
@@ -188,19 +190,6 @@ def downloadAlbums(googlePhotos):
 		logger.log(msg)
 
 	logger.endLog()
-
-class MessageLogger(object):
-
-	def __init__(self, logName="photos.log"):
-		self.file = open(logName, "w")
-		
-	def log(self, msg):
-		self.file.write(msg + "\n")
-		self.file.flush()
-		print(msg, flush=True)
-
-	def endLog(self):
-		self.file.close()
 
 
 albumId = "AM4Ir-I7FCAKh6JMzG6DJ6lfDGQMDXFvqz9LS-lzey85T1KiUnOp-oWZIr__TOPTOXmu6mKmGbbl"
